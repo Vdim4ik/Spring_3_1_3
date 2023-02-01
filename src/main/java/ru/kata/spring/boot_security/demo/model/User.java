@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "user")
-public class User implements UserDetails {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,9 +23,6 @@ public class User implements UserDetails {
 
     @Column(name = "password")
     private String password;
-
-    @Column(name = "last_name")
-    private String lastName;
 
     @Column(name = "age")
     private byte age;
@@ -41,10 +38,9 @@ public class User implements UserDetails {
 
     public User() { }
 
-    public User(String username, String password, String lastName, byte age, String email, Set<Role> roles) {
+    public User(String username, String password, byte age, String email, Set<Role> roles) {
         this.username = username;
         this.password = password;
-        this.lastName = lastName;
         this.age = age;
         this.email = email;
         this.roles = roles;
@@ -58,21 +54,12 @@ public class User implements UserDetails {
         this.id = id;
     }
 
-    @Override
     public String getUsername() {
         return username;
     }
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
     }
 
     public byte getAge() {
@@ -91,7 +78,6 @@ public class User implements UserDetails {
         this.email = email;
     }
 
-    @Override
     public String getPassword() {
         return password;
     }
@@ -108,30 +94,10 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles.stream().map(x -> new SimpleGrantedAuthority(x.getName())).collect(Collectors.toList());
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
+//    @Override
+//    public Collection<? extends GrantedAuthority> getAuthorities() {
+//        return roles.stream().map(x -> new SimpleGrantedAuthority(x.getName())).collect(Collectors.toList());
+//    }
 
     @Override
     public String toString() {
@@ -139,7 +105,6 @@ public class User implements UserDetails {
                 "id=" + id +
                 ", login='" + username + '\'' +
                 ", passowrd='" + password + '\'' +
-                ", lastName='" + lastName + '\'' +
                 ", age=" + age +
                 ", email='" + email + '\'' +
                 ", roles=" + roles +
@@ -151,11 +116,11 @@ public class User implements UserDetails {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return age == user.age && Objects.equals(id, user.id) && Objects.equals(username, user.username) && Objects.equals(password, user.password) && Objects.equals(lastName, user.lastName) && Objects.equals(email, user.email) && Objects.equals(roles, user.roles);
+        return age == user.age && Objects.equals(id, user.id) && Objects.equals(username, user.username) && Objects.equals(password, user.password) && Objects.equals(email, user.email) && Objects.equals(roles, user.roles);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, password, lastName, age, email, roles);
+        return Objects.hash(id, username, password, age, email, roles);
     }
 }

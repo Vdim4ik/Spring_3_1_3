@@ -27,7 +27,7 @@ public class UserDaoImp implements UserDao {
     public void updateUser(long id, User updateUser) {
         User user = entityManager.find(User.class, id);
         user.setUsername(updateUser.getUsername());
-        user.setLastName(updateUser.getLastName());
+        user.setPassword(updateUser.getPassword());
         user.setAge(updateUser.getAge());
         user.setEmail(updateUser.getEmail());
     }
