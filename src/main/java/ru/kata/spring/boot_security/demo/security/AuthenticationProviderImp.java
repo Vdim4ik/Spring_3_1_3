@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.service.UserServiceImp;
 
 import java.util.Collections;
@@ -30,7 +31,7 @@ public class AuthenticationProviderImp implements AuthenticationProvider {
         if (!password.equals(userDetails.getPassword())) {
             throw new BadCredentialsException("Pass err");
         }
-        return new UsernamePasswordAuthenticationToken(userDetails, password, Collections.emptyList());
+        return new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
     }
 
     @Override
