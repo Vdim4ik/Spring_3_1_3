@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.kata.spring.boot_security.demo.service.UserServiceImp;
@@ -27,39 +28,29 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userServiceImp);
+        auth.userDetailsService(userServiceImp).passwordEncoder(getPasswordEncoder());
     }
 
     @Bean
     public PasswordEncoder getPasswordEncoder() {
-        return NoOpPasswordEncoder.getInstance();
+        return new BCryptPasswordEncoder();
     }
-
-
-//    @Override
-//    protected void configure(HttpSecurity http) throws Exception {
-//        http
-//                .formLogin().loginPage("/login")
-//                .loginProcessingUrl("/login")
-//                .defaultSuccessUrl("/user", true)
-//                .failureUrl("/login");
-//    }
-
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers( "/login").permitAll()
-                .anyRequest().authenticated()
-                .and()
+                    .antMatchers( "/login").permitAll()
+                    .antMatchers( "/admin", "/update", "/new").hasAuthority("ROLE_ADMIN")
+                    .anyRequest().authenticated()
+                    .and()
                 .formLogin()
                     .successHandler(successUserHandler)
-                .usernameParameter("username")
-                .passwordParameter("password")
                     .permitAll()
                     .and()
                 .logout()
+                    .logoutUrl("/logout")
+                    .logoutSuccessUrl("/login")
                     .permitAll();
     }
 }

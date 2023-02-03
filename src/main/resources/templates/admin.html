@@ -1,10 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
-  Admin page
+<table border="1">
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Username</th>
+        <th>Password</th>
+        <th>Age</th>
+        <th>Email</th>
+        <th>Role</th>
+    </tr>
+    </thead>
+    <tr th:each="user:${userList}">
+        <td>
+            <a th:href="@{/update/{id}(id=${user.getId()})}" th:text="${user.getId()}"></a>
+        </td>
+        <td th:text="${user.getUsername()}"></td>
+        <td th:text="${user.getPassword()}"></td>
+        <td th:text="${user.getAge()}"></td>
+        <td th:text="${user.getEmail()}"></td>
+        <td th:text="${user.getRoles()}"></td>
+    </tr>
+</table>
+<div>
+    <form  th:action="@{/new}" method="GET">
+        <input type="submit" value="new User">
+    </form>
+    <form  th:action="@{/logout}" method="POST">
+        <input type="submit" value="logout">
+    </form>
+</div>
+</tbody>
 </body>
 </html>

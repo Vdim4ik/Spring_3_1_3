@@ -18,13 +18,16 @@ public class LoginController {
     }
 
     @GetMapping("/admin")
-    public String getAdminPage() {
-        return "/admin";
+    public String getAdminPage(ModelMap modelMap) {
+        modelMap.addAttribute("userList", userService.getUserList());
+        return "admin";
     }
 
     @GetMapping("/user")
-    public String getUserPage() {
-        return "/user";
+    public String getUserPage(Principal principal, ModelMap modelMap) {
+        User user = userService.getUserByUsername(principal.getName());
+        modelMap.addAttribute("user", user);
+        return "user";
     }
 
 }
