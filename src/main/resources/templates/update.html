@@ -6,7 +6,7 @@
 </head>
 <body>
 <div>
-  <form th:method="PATCH" th:action="@{/update/{id}(id=${user.getId()})}" th:object="${user}">
+  <form th:method="PATCH" th:action="@{/update/{username}(username=${user.getUsername()})}" th:object="${user}">
     <label for="username">Username</label> <br>
     <input type="text" th:field="*{username}" id="username"><br>
     <label for="password">Password</label> <br>
@@ -15,8 +15,7 @@
     <input type="text" th:field="*{age}" id="age"><br>
     <label for="email">Email</label> <br>
     <input type="text" th:field="*{email}" id="email"> <br>
-    <input type="checkbox" value="ROLE_USER" name="checkBoxRole">USER
-    <input type="checkbox" value="ROLE_ADMIN" name="checkBoxRole">ADMIN <br>
+    <input type="checkbox" name="roles" th:each="role:${roleList}" th:text="${role.name}" th:value="${role.id}" th:field="*{roles}"> <br>
     <input type="submit" value="Update">
   </form>
 </div>

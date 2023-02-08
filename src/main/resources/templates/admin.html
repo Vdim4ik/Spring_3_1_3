@@ -19,7 +19,7 @@
     </thead>
     <tr th:each="user:${userList}">
         <td>
-            <a th:href="@{/update/{id}(id=${user.getId()})}" th:text="${user.getId()}"></a>
+            <a th:href="@{/update/{username}(username=${user.getUsername()})}" th:text="${user.getId()}"></a>
         </td>
         <td th:text="${user.getUsername()}"></td>
         <td th:text="${user.getPassword()}"></td>

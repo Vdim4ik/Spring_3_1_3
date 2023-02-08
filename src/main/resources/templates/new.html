@@ -15,8 +15,7 @@
             <input type="text" th:field="*{age}" id="age"><br>
             <label for="email">Email</label> <br>
             <input type="text" th:field="*{email}" id="email"> <br>
-            <input type="checkbox" value="ROLE_USER" name="checkBoxRole">USER
-            <input type="checkbox" value="ROLE_ADMIN" name="checkBoxRole">ADMIN <br>
+            <input type="checkbox" name="roles" th:each="role:${roleList}" th:text="${role.name}" th:value="${role.id}" th:field="*{roles}"> <br>
             <input type="submit" value="Add">
         </form>
     </div>

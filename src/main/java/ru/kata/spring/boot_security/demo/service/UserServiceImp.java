@@ -1,80 +1,64 @@
 package ru.kata.spring.boot_security.demo.service;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.kata.spring.boot_security.demo.dao.UserDao;
 import ru.kata.spring.boot_security.demo.model.User;
-import ru.kata.spring.boot_security.demo.security.UserDetailsImp;
+import ru.kata.spring.boot_security.demo.repositories.UserRepository;
 
-import javax.persistence.NoResultException;
 import java.util.List;
 
 @Service
-public class UserServiceImp implements UserService, UserDetailsService {
-
-    private final UserDao userDao;
+public class UserServiceImp implements UserDetailsService {
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImp(UserDao userDao,@Lazy PasswordEncoder passwordEncoder) {
-        this.userDao = userDao;
+    public UserServiceImp(UserRepository userRepository,@Lazy PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
-    @Override
     @Transactional(readOnly = true)
     public List<User> getUserList() {
-        return userDao.getUserList();
+        return userRepository.findAll();
     }
 
-    @Override
     @Transactional
     public void addUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userDao.addUser(user);
+        userRepository.save(user);
     }
 
-    @Override
     @Transactional
-    public void updateUser(long id, User updateUser) {
-        updateUser.setPassword(passwordEncoder.encode(updateUser.getPassword()));
-        userDao.updateUser(id, updateUser);
+    public void updateUser(String username, User updateUser) {
+        User user = findByUsername(username);
+        user.setUsername(updateUser.getUsername());
+        user.setPassword(passwordEncoder.encode(updateUser.getPassword()));
+        user.setAge(updateUser.getAge());
+        user.setEmail(updateUser.getEmail());
+        user.setRoles(updateUser.getRoles());
+        userRepository.save(user);
     }
 
-    @Override
     @Transactional
     public void deleteUser(long id) {
-        userDao.deleteUser(id);
+        userRepository.deleteById(id);
     }
 
-    @Override
     @Transactional(readOnly = true)
-    public User getUserById(long id) {
-        return userDao.getUserById(id);
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public User getUserByUsername(String username) {
-        return userDao.getUserByUsername(username);
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user;
-        try {
-            user = getUserByUsername(username);
-        } catch (NoResultException | EmptyResultDataAccessException e) {
-            throw new UsernameNotFoundException("User no found");
-        }
-        return new UserDetailsImp(user);
-        //return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), user.getAuthorities());
+    public UserDetails loadUserByUsername(String username) {
+        User user = userRepository.findByUsername(username);
+        return user;
     }
 }
