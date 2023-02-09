@@ -16,7 +16,6 @@ import ru.kata.spring.boot_security.demo.service.UserServiceImp;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final SuccessUserHandler successUserHandler;
-
     private final UserServiceImp userServiceImp;
 
     @Autowired
@@ -39,17 +38,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                    .antMatchers( "/login").permitAll()
-                    .antMatchers( "/admin", "/update", "/new").hasAuthority("ROLE_ADMIN")
-                    .anyRequest().authenticated()
-                    .and()
+                .antMatchers( "/login").permitAll()
+                .antMatchers( "/admin", "/update", "/new").hasAuthority("ROLE_ADMIN")
+                .antMatchers("/users").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
+                .anyRequest().authenticated()
+                .and()
                 .formLogin()
-                    .successHandler(successUserHandler)
-                    .permitAll()
-                    .and()
+                .successHandler(successUserHandler)
+                .permitAll()
+                .and()
                 .logout()
-                    .logoutUrl("/logout")
-                    .logoutSuccessUrl("/login")
-                    .permitAll();
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login")
+                .permitAll();
     }
 }

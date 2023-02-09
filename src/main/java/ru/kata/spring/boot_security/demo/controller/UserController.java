@@ -25,5 +25,4 @@ public class UserController {
         modelMap.addAttribute("user", user);
         return "user";
     }
-
 }
